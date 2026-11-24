@@ -235,6 +235,21 @@ function head(P, v) {
 <script type="application/ld+json">
 ${jsonLd(P)}
 </script>
+<!-- Matomo (stats.unysonplus.com, site id 5), cookie-free -->
+<script>
+var _paq = window._paq = window._paq || [];
+_paq.push(['disableCookies']);
+_paq.push(['trackPageView']);
+_paq.push(['enableLinkTracking']);
+(function() {
+  var u="https://stats.unysonplus.com/";
+  _paq.push(['setTrackerUrl', u+'matomo.php']);
+  _paq.push(['setSiteId', '5']);
+  var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+  g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+})();
+</script>
+<!-- End Matomo Code -->
 </head>`;
 }
 
