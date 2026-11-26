@@ -6,8 +6,8 @@ CRMGEN.register({
   heroStages: ['Enquiry', 'Tour', 'Booked'],
 
   page: {
-    title: 'Free Event and Wedding Venue CRM Website Generator for WordPress | Unyson+',
-    description: 'Build a free CRM website for a wedding or event venue on WordPress: spaces, packages, date availability enquiries, tour bookings, a brochure download and an enquiry-to-booking pipeline. Copy the prompt for your AI agent.',
+    title: 'Free Wedding Venue CRM Website for WordPress | Unyson+',
+    description: 'A free CRM website for a wedding or event venue on WordPress: spaces, packages, availability enquiries, tour bookings and a booking pipeline.',
     h1: 'Free event and wedding venue CRM website for WordPress',
     lede: 'Your spaces, packages and gallery, with date availability enquiries, venue tours and a pipeline from first enquiry to deposit paid. For wedding, party and conference venues, built on the free Unyson+ framework.',
     note: 'Works alongside the venue management software you already use.',

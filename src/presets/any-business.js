@@ -8,7 +8,7 @@ CRMGEN.register({
 
   page: {
     title: 'Free CRM Website Generator for WordPress | Unyson+',
-    description: 'Build a free CRM website on WordPress. Pick your industry, services, lead forms and sales pipeline, then copy a ready-made build prompt for your AI agent. No sign-up.',
+    description: 'Build a free CRM website on WordPress. Pick your industry, services, lead forms and pipeline, then copy a ready-made prompt for your AI agent.',
     h1: 'Free CRM website generator for WordPress',
     lede: 'Choose your services, lead forms and sales pipeline. You get a build prompt and a site spec that your AI agent turns into a working CRM website, built on the free Unyson+ framework.',
     note: 'Pick your industry below, or describe any business in the form.',

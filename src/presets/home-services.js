@@ -6,8 +6,8 @@ CRMGEN.register({
   heroStages: ['New', 'Quoted', 'Won'],
 
   page: {
-    title: 'Free Home Services CRM Website Generator for WordPress | Unyson+',
-    description: 'Build a free CRM website for plumbers, electricians, roofers, HVAC and cleaning companies on WordPress: quote requests, service areas, job photos and a lead pipeline. Copy the prompt for your AI agent.',
+    title: 'Free Home Services CRM Website for WordPress | Unyson+',
+    description: 'A free CRM website for plumbers, electricians, roofers and HVAC firms on WordPress: quote requests, service areas, job photos and a lead pipeline.',
     h1: 'Free home services CRM website for WordPress',
     lede: 'Quote requests with photos, service area pages, recent jobs and a pipeline from first call to finished job. Built for plumbers, electricians, roofers, HVAC, cleaning and landscaping companies, on the free Unyson+ framework.',
     note: 'Works alongside the scheduling or quoting software you already use.',

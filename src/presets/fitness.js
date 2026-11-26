@@ -6,8 +6,8 @@ CRMGEN.register({
   heroStages: ['Trial', 'Attended', 'Member'],
 
   page: {
-    title: 'Free Gym and Fitness Studio CRM Website Generator for WordPress | Unyson+',
-    description: 'Build a free CRM website for a gym, fitness studio or personal trainer on WordPress: classes, timetable, memberships, free trial sign-ups and a member pipeline. Copy the prompt for your AI agent.',
+    title: 'Free Gym CRM Website for WordPress | Unyson+',
+    description: 'A free CRM website for a gym, fitness studio or personal trainer on WordPress: classes, timetable, memberships, free trials and a member pipeline.',
     h1: 'Free gym and fitness studio CRM website for WordPress',
     lede: 'Classes, a timetable, memberships, trainer profiles and free trial sign-ups, with a pipeline from first trial to paying member. For gyms, boutique studios and personal trainers, built on the free Unyson+ framework.',
     note: 'Works with the class booking software you already use.',

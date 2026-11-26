@@ -164,11 +164,17 @@ function jsonLd(P) {
         { '@type': 'HowToStep', position: 3, name: 'Let Claude build it', text: 'Paste the prompt into a Claude chat with the Unyson+ connector on, or into an AI coding agent. It enables the WordPress features it needs and builds the site.' }
       ]
     },
-    {
-      '@type': 'FAQPage',
-      mainEntity: faqOf(P).map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: strip(f.a) } }))
-    }
   ];
+  /* Only emit FAQPage when there ARE questions. The home page sets `faq: []`, and
+     the node was still being written as `{ "@type": "FAQPage", "mainEntity": [] }`
+     — structured data that declares an FAQ and carries none. */
+  const faqs = faqOf(P);
+  if (faqs.length) {
+    graph.push({
+      '@type': 'FAQPage',
+      mainEntity: faqs.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: strip(f.a) } }))
+    });
+  }
   const crumbTrail = trail(P);
   if (crumbTrail.length) {
     graph.push({
@@ -792,15 +798,31 @@ function homePage(v) {
     path: '/',
     label: 'Site Creator',
     page: {
-      title: 'Free Website Generator for WordPress | Unyson+ Site Creator',
-      description: 'Describe your business and get a complete, editable WordPress site built on the free Unyson+ framework by your own AI agent \u2014 native page-builder pages, not throwaway markup.',
+      title: 'Build a WordPress Website with AI \u2014 Free Site Generator',
+      description: 'Describe your business and your AI agent builds the WordPress site: real page-builder pages, a design system you can edit, nothing invented. Free.',
       h1: 'Build a WordPress site from a description',
       lede: 'Tell it what the business is. Get a site your agent builds on WordPress with Unyson+ \u2014 real page-builder pages, a design system you can change, and nothing invented.',
       note: 'Free. Runs in your own AI agent, on your own machine.',
       ogAlt: 'The Unyson+ Site Creator',
       schemaName: 'Unyson+ Site Creator',
-      // jsonLd builds an FAQPage from these; the home page carries no FAQ of its own.
-      faq: [], faqCommon: false,
+      /* jsonLd builds an FAQPage from these. These are question-shaped on purpose:
+         they are the phrasings people type and the ones an AI answer quotes, and
+         the head terms stay in the title where search can find them. */
+      faq: [
+        { q: 'Can AI build a WordPress website?',
+          a: 'Yes. You describe the business in the form above, copy the result into your own AI agent, and it builds a real WordPress site on the free Unyson+ framework. The pages are native page-builder content, so you can open and edit any of them afterwards without the agent.' },
+        { q: 'How do I build a WordPress site with Claude?',
+          a: 'Two ways. With a paid Claude plan you can work in the normal Claude app: install Unyson+ on a fresh WordPress, turn on the connector under <b>Unyson+ &rarr; Connect AI</b>, and paste the prompt. With a coding agent such as Claude Code or Cursor, the prompt tells it to clone the free AI Dev Kit first and follow the build rules in it.' },
+        { q: 'Is it really free?',
+          a: 'Yes. The generator, the Unyson+ plugin and theme, and the AI Dev Kit are all free, and there is no sign-up. You pay only for your own hosting and, if you use one, your AI agent subscription.' },
+        { q: 'Will it make up content about my business?',
+          a: 'No, and that is deliberate. Anything you do not give it is recorded in the spec as missing, and the build leaves that section out rather than inventing it. No invented testimonials, numbers, prices or opening hours. You are told at the end what was left out and what to supply.' },
+        { q: 'Do I need to know how to code?',
+          a: 'No. You answer six questions and copy the result. Afterwards the site is edited in the WordPress admin with a visual page builder.' },
+        { q: 'Can I pick how the site looks?',
+          a: 'Yes. Choose one of thirty design directions — Swiss, Bauhaus, luxury, neubrutalism, dark, newsprint and more — and see each one as a full rendered page before you choose. The look is applied through Theme Settings, so changing it later changes every page at once.' },
+      ],
+      faqCommon: false,
     },
     // jsonLd() reads content.legend to describe the generator's first step. The home page has no
     // generator form, so it supplies the phrase directly rather than head() growing a special case.

@@ -6,8 +6,8 @@ CRMGEN.register({
   heroStages: ['Screened', 'Interview', 'Placed'],
 
   page: {
-    title: 'Free Recruitment Agency CRM Website Generator for WordPress | Unyson+',
-    description: 'Build a free recruitment agency CRM website on WordPress: job board, applications with CV upload, candidate registration, vacancy requests from employers and a placement pipeline. Copy the prompt for your AI agent.',
+    title: 'Free Recruitment CRM Website for WordPress | Unyson+',
+    description: 'A free recruitment agency CRM website on WordPress: a job board, applications with CV upload, candidate registration and a placement pipeline.',
     h1: 'Free recruitment agency CRM website for WordPress',
     lede: 'A job board with filters, applications with CV upload, candidate registration, vacancy requests from employers and a pipeline from application to placement. Built on the free Unyson+ framework.',
     note: 'Works alongside the applicant tracking system you already use.',

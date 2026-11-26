@@ -6,8 +6,8 @@ CRMGEN.register({
   heroStages: ['New', 'Booked', 'Attended'],
 
   page: {
-    title: 'Free Dental and Medical Clinic CRM Website Generator for WordPress | Unyson+',
-    description: 'Build a free CRM website for a dental practice or medical clinic on WordPress: treatment pages, appointment requests, new patient information, recalls and a patient pipeline. Copy the prompt for your AI agent.',
+    title: 'Free Dental Clinic CRM Website for WordPress | Unyson+',
+    description: 'A free CRM website for a dental practice or medical clinic on WordPress: treatment pages, appointment requests, new patient forms and recalls.',
     h1: 'Free dental and medical clinic CRM website for WordPress',
     lede: 'Treatment pages, appointment requests, new patient information and check-up reminders for dental practices, medical clinics and therapy clinics. Pick what you need and copy a prompt your AI agent builds on the free Unyson+ framework.',
     note: 'Works with the online booking system you already use. Forms never ask for health details.',

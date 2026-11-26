@@ -11,8 +11,8 @@ CRMGEN.register({
   heroStages: ['Enquiry', 'Proposal', 'Client'],
 
   page: {
-    title: 'Free Professional Services CRM Website Generator for WordPress | Unyson+',
-    description: 'Build a free CRM website for a consultancy, accountancy, architecture practice or agency on WordPress: services, credentials, case studies, enquiry forms and a client pipeline. Copy the prompt for your AI agent.',
+    title: 'Free Professional Services CRM Website for WordPress | Unyson+',
+    description: 'A free CRM website for a consultancy, accountancy or agency on WordPress: services, credentials, case studies, enquiries and a client pipeline.',
     h1: 'Free professional services CRM website for WordPress',
     lede: 'Your services, how you work, the credentials that matter and the enquiries they bring in — with a pipeline from first contact to signed client. For consultancies, accountants, architects, engineers and agencies, on the free Unyson+ framework.',
     note: 'Sold on judgement, not on price. The site has to earn trust before it asks for anything.',

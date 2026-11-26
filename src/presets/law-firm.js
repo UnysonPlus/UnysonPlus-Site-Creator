@@ -7,7 +7,7 @@ CRMGEN.register({
 
   page: {
     title: 'Free Law Firm CRM Website Generator for WordPress | Unyson+',
-    description: 'Build a free law firm CRM website on WordPress: practice area pages, attorney profiles, consultation requests, legal guides and an intake pipeline, with the right disclaimers. Copy the prompt for your AI agent.',
+    description: 'A free law firm CRM website on WordPress: practice area pages, attorney profiles, consultation requests and an intake pipeline, with disclaimers.',
     h1: 'Free law firm CRM website for WordPress',
     lede: 'Practice area pages, attorney profiles, consultation requests and an intake pipeline from first enquiry to retained client, with the disclaimers legal advertising needs. Built on the free Unyson+ framework.',
     note: 'Works with the intake or case management software you already use.',

@@ -6,8 +6,8 @@ CRMGEN.register({
   heroStages: ['Enquiry', 'Booked', 'Regular'],
 
   page: {
-    title: 'Free Salon and Spa CRM Website Generator for WordPress | Unyson+',
-    description: 'Build a free CRM website for a hair salon, beauty salon, spa, barber or nail studio on WordPress: services and prices, booking requests, a gallery and a client pipeline. Copy the prompt for your AI agent.',
+    title: 'Free Salon and Spa CRM Website for WordPress | Unyson+',
+    description: 'A free CRM website for a hair salon, spa, barber or nail studio on WordPress: services and prices, booking requests, a gallery and a client list.',
     h1: 'Free salon and spa CRM website for WordPress',
     lede: 'Services and prices, your team, a gallery of your work and booking requests, with rebooking reminders that turn first visits into regulars. For hair and beauty salons, spas, barbers and nail studios, on the free Unyson+ framework.',
     note: 'Works with the online booking system you already use.',
