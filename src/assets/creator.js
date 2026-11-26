@@ -449,6 +449,68 @@
     });
   }
 
+  /* ---------- prefill from the URL ----------
+     So a page like /build/membership-website/ can send someone here with the
+     form already shaped for what they came for, instead of dropping them on a
+     blank six-question form. Runs AFTER restore(), so a link always beats a
+     stale saved draft — somebody who clicked "build a membership site" means
+     it, whatever they filled in last week.
+
+       ?name=…&describe=…&market=…&type=…&phone=…&email=…
+       &pages=home,pricing,faq,contact      (checkboxes: exact set)
+       &style=saas&styleNotes=…
+       &action=signup                       (radio)
+       &has=copy,photos                     (checkboxes)
+       &target=…&agent=claude-code&publish=draft
+
+     Unknown names and values that are not offered are ignored rather than
+     trusted: everything here comes from a query string. */
+  function prefill() {
+    var q;
+    try { q = new URLSearchParams(window.location.search); } catch (e) { return false; }
+    if (!q || !q.toString()) return false;
+
+    var TEXT = ['name', 'describe', 'market', 'phone', 'email', 'styleNotes', 'target', 'extraPages'];
+    var SELECT = ['type', 'style', 'agent'];
+    var RADIO = ['action', 'publish'];
+    var MULTI = ['pages', 'has'];
+    var used = 0;
+
+    TEXT.forEach(function (k) {
+      if (!q.has(k) || !form.elements[k]) return;
+      form.elements[k].value = q.get(k).slice(0, 600);
+      used++;
+    });
+    SELECT.forEach(function (k) {
+      if (!q.has(k)) return;
+      var el = form.elements[k];
+      if (!el || !el.options) return;
+      var want = q.get(k);
+      // Only accept a value the select actually offers.
+      for (var i = 0; i < el.options.length; i++) {
+        if (el.options[i].value === want) { el.value = want; used++; return; }
+      }
+    });
+    RADIO.forEach(function (k) {
+      if (!q.has(k)) return;
+      var want = q.get(k), hit = false;
+      Array.prototype.forEach.call(form.querySelectorAll('input[name="' + k + '"]'), function (i) {
+        if (i.value === want) { i.checked = true; hit = true; }
+      });
+      if (hit) used++;
+    });
+    MULTI.forEach(function (k) {
+      if (!q.has(k)) return;
+      var want = q.get(k).split(',').map(function (x) { return x.trim(); }).filter(Boolean);
+      Array.prototype.forEach.call(form.querySelectorAll('input[name="' + k + '"]'), function (i) {
+        // A disabled box (Home is always built) keeps its state.
+        if (!i.disabled) { i.checked = want.indexOf(i.value) !== -1; }
+      });
+      used++;
+    });
+    return used > 0;
+  }
+
   /* ---------- tabs ---------- */
   Array.prototype.forEach.call(form.ownerDocument.querySelectorAll('#cgen .tabs button'), function (btn) {
     btn.addEventListener('click', function () {
@@ -499,5 +561,9 @@
   form.addEventListener('input', render);
   form.addEventListener('change', render);
   restore();
+  if (prefill()) {
+    // Say so, rather than leaving someone wondering why the form is not empty.
+    say('Filled in from the link. Change anything you like.');
+  }
   render();
 })();

@@ -592,3 +592,17 @@ input:focus, select:focus, textarea:focus { outline: none; border-color: var(--b
    narrow screen makes both unreadable rather than compact. */
 .stylep__grid { display: grid; grid-template-columns: 1fr; gap: 26px; align-items: stretch; }
 @media (min-width: 900px) { .stylep__grid { grid-template-columns: 1fr 1fr; } }
+
+/* Site-type pages (/build/<kind>-website/). The How and CTA bands are dark, and
+   a default link colour meant for white sat at 1.05:1 and 1.27:1 against them —
+   invisible, measured, not guessed. Both links are now light on the dark band. */
+.how__note { margin: 22px 0 0; }
+.how__note a,
+.cta__related a { color: #fff; text-decoration: underline; text-underline-offset: 3px; }
+.how__note a:hover,
+.cta__related a:hover { color: var(--accent); }
+.cta__related { margin: 18px 0 0; font-size: 0.95rem; opacity: 0.92; }
+.inc__grid { display: grid; grid-template-columns: 1fr; gap: 26px 40px; margin-top: 26px; }
+@media (min-width: 760px) { .inc__grid { grid-template-columns: 1fr 1fr; } }
+.inc__item h3 { margin: 0 0 6px; font-size: 1.05rem; }
+.inc__item p { margin: 0; }

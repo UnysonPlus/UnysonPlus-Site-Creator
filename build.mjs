@@ -5,7 +5,7 @@ import path from 'node:path';
 import vm from 'node:vm';
 import crypto from 'node:crypto';
 
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 const ROOT = path.dirname(fileURLToPath(import.meta.url));
 const SRC = path.join(ROOT, 'src');
 const OUT = path.join(ROOT, 'dist');
@@ -50,6 +50,18 @@ for (const f of fs.readdirSync(path.join(SRC, 'presets')).filter((f) => f.endsWi
 }
 const HOME = presets['any-business'];
 if (!HOME) throw new Error('any-business preset is required');
+
+/* Site-TYPE pages (/build/<kind>-website/). Unlike the CRM presets these are
+   plain ES modules imported directly — they carry no generator, so they never
+   need the vm/browser context the presets are evaluated in. */
+const guidesDir = path.join(SRC, 'guides');
+const guides = [];
+if (fs.existsSync(guidesDir)) {
+  for (const f of fs.readdirSync(guidesDir).filter((f) => f.endsWith('.js')).sort()) {
+    const mod = await import(pathToFileURL(path.join(guidesDir, f)).href);
+    guides.push(mod.default);
+  }
+}
 const PATHS = Object.fromEntries(Object.values(presets).map((p) => [p.id, p.path]));
 
 /* ---------- helpers ---------- */
@@ -157,7 +169,8 @@ function jsonLd(P) {
     { '@type': 'Organization', '@id': SITE + '/#org', name: 'Unyson+', url: 'https://docs.unysonplus.com/', sameAs: ['https://github.com/UnysonPlus'] },
     {
       '@type': 'HowTo',
-      name: 'How to build a free ' + (P.id === 'any-business' ? '' : P.label.toLowerCase() + ' ') + 'CRM website on WordPress',
+      name: P.page.howToName
+        || 'How to build a free ' + (P.id === 'any-business' ? '' : P.label.toLowerCase() + ' ') + 'CRM website on WordPress',
       step: [
         { '@type': 'HowToStep', position: 1, name: 'Choose your features', text: 'Choose pages, ' + P.content.legend.toLowerCase() + ', lead forms, pipeline stages and brand colors.' },
         { '@type': 'HowToStep', position: 2, name: 'Copy the prompt and spec', text: 'Copy the build prompt, which ends with the full site spec.' },
@@ -965,6 +978,72 @@ ${footer()}
 `;
 }
 
+/* A site-TYPE page: explains the job, then hands over to the Site Creator with
+   the form already filled in. No generator of its own — see src/guides/. */
+function guidePage(G, v) {
+  const P = {
+    id: G.id, label: G.label, path: G.path,
+    // faqOf() reads P.page.faq / P.page.faqCommon, not the top level.
+    page: Object.assign({ ogAlt: G.label, faq: G.faq, faqCommon: false }, G.page),
+    content: { legend: 'the parts a ' + G.label.toLowerCase() + ' needs' },
+  };
+  // The Creator reads these from the query string (see creator.js prefill()).
+  const q = Object.entries(G.prefill || {})
+    .map(([k, val]) => encodeURIComponent(k) + '=' + encodeURIComponent(val)).join('&');
+  const start = '/' + (q ? '?' + q : '') + '#cgen';
+
+  return `${head(P, v)}
+<body>
+<a class="skip" href="#included">Skip to what you get</a>
+${topbar({ app: 'Site Creator', nav: [['#included', 'What you get'], ['#how', 'How it works'], ['#faq', 'FAQ'], ['/crm/', 'CRM websites'], ['https://docs.unysonplus.com/', 'Docs']] })}
+<main>
+  <section class="hero">
+    <div class="wrap hero__in">
+      <h1>${esc(G.page.h1)}</h1>
+      <p class="hero__lede">${esc(G.page.lede)}</p>
+      <p class="hero__cta"><a class="btn btn--accent" href="${esc(start)}">Describe your site</a></p>
+      <p class="hero__note">${esc(G.page.note)}</p>
+    </div>
+  </section>
+
+  <section id="included" class="inc" aria-labelledby="incTitle">
+    <div class="wrap">
+      <h2 id="incTitle">What the build gives you</h2>
+      <div class="inc__grid">
+        ${G.included.map(([t, d]) => `<div class="inc__item"><h3>${esc(t)}</h3><p>${esc(d)}</p></div>`).join('\n        ')}
+      </div>
+    </div>
+  </section>
+
+  <section id="how" class="how" aria-labelledby="howTitle">
+    <div class="wrap">
+      <h2 id="howTitle">${esc(G.page.howToName || ('How to build a ' + G.label.toLowerCase()))}</h2>
+      <ol class="how__steps">
+        <li><h3>Describe it</h3><p>Answer six questions about the business, the pages and the look. Nothing is sent anywhere; it all stays in your browser.</p></li>
+        <li><h3>Copy the prompt</h3><p>You get a build prompt and a site spec. Anything you did not supply is listed as missing, so the agent asks rather than invents it.</p></li>
+        <li><h3>Your agent builds it</h3><p>Paste it into Claude, Claude Code or Cursor. It installs Unyson+, switches on the extensions this needs, and builds the pages.</p></li>
+      </ol>
+      <p class="how__note"><a href="${esc(start)}">Start with this already filled in &rarr;</a></p>
+    </div>
+  </section>
+
+  ${faq(P)}
+
+  <section class="cta" aria-labelledby="ctaTitle">
+    <div class="wrap cta__in">
+      <h2 id="ctaTitle">${esc(G.page.h1)}</h2>
+      <p>Free, no account, and the site is an ordinary WordPress install you own.</p>
+      <p><a class="btn btn--accent" href="${esc(start)}">Describe your site</a></p>
+      ${G.related && G.related.length ? `<p class="cta__related">${G.related.map(([h, t]) => `<a href="${esc(h)}">${esc(t)}</a>`).join(' &middot; ')}</p>` : ''}
+    </div>
+  </section>
+</main>
+${footer()}
+</body>
+</html>
+`;
+}
+
 function page(P, v) {
   return `${head(P, v)}
 <body>
@@ -1011,6 +1090,13 @@ const v = { css: hash(path.join(SRC, 'assets', 'style.css')), engine: hash(path.
 for (const id of Object.keys(presets)) v[id] = hash(path.join(SRC, 'presets', id + '.js'));
 
 const urls = [];
+for (const G of guides) {
+  const dir = path.join(OUT, G.path);
+  fs.mkdirSync(dir, { recursive: true });
+  fs.writeFileSync(path.join(dir, 'index.html'), guidePage(G, v));
+  urls.push(G.path);
+  console.log('built', G.path, '(site type)');
+}
 for (const P of Object.values(presets)) {
   const dir = path.join(OUT, P.path);
   fs.mkdirSync(dir, { recursive: true });
