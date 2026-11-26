@@ -26,6 +26,14 @@
   var STYLES = window.UPWSTYLES || [];
   var KEY = 'upw-creator-v1';
 
+  /* Where the agent gets its instructions and the software. The CRM engine has
+     emitted these since the start; the Creator used to say only "follow the
+     create-site skill in the Unyson+ AI Dev Kit" without ever saying where the
+     kit is — so an agent that had never seen it had nothing to act on. */
+  var KIT_URL = 'https://github.com/UnysonPlus/UnysonPlus-AI-Dev-Kit';
+  var PLUGIN_ZIP = 'https://github.com/UnysonPlus/UnysonPlus/releases/latest/download/unysonplus.zip';
+  var THEME_REPO = 'https://github.com/UnysonPlus/UnysonPlus-Theme';
+
   /* ---------- small helpers (same vocabulary as the CRM engine) ---------- */
   function slug(s) {
     return String(s || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
@@ -194,6 +202,58 @@
   }
 
   /* ---------- state -> prompt ---------- */
+  /* ---------- the setup the agent needs before it can build anything ----------
+     Branches on the chosen agent, because the two cases are genuinely different:
+     a coding agent can clone the kit and install the software, while the Claude
+     app reaches the site only through the connector and has no local files at
+     all. Both end with the same instruction: if you cannot reach the reference,
+     stop and say so — a silent fall back to general WordPress knowledge produces
+     something that looks like a site and follows none of the rules. */
+  function setupSteps(s, spec) {
+    var out = [];
+    var exts = spec.build.extensions.join(', ');
+    var target = s.target || '[the WordPress install]';
+    out.push('## Before you build');
+
+    if (s.agent === 'claude-app') {
+      out.push('You are working through the **Unyson+ connector** in the Claude app, so you have');
+      out.push('the site\'s own tools and no local files.');
+      out.push('');
+      out.push('1. **The AI Dev Kit is not reachable this way.** Use the connector\'s `build_docs`');
+      out.push('   tool for element, option and Theme Settings reference, and call `describe_element`');
+      out.push('   before placing any element — unknown option ids are rejected.');
+      out.push('   **If neither tool answers, say so and stop. Do not build from general WordPress');
+      out.push('   knowledge:** the result would look like a site and follow none of the rules.');
+      out.push('2. Unyson+ must already be installed on ' + target + ' and connected');
+      out.push('   (**Unyson+ → Connect AI → Set up this site for an AI app**). If the connector does');
+      out.push('   not respond, stop and tell me rather than guessing.');
+      out.push('3. Check **Settings → Permalinks** is "Post name", then load an inner page. On a');
+      out.push('   subfolder install WordPress does not always write `.htaccess`, and the symptom is');
+      out.push('   distinctive: the home page works and every other page 404s.');
+      out.push('4. Activate these extensions with `manage_extension`, or ask me to: ' + exts + '.');
+      out.push('   Forms must be active before any form is built.');
+    } else {
+      out.push('1. **Get the AI Dev Kit**: clone ' + KIT_URL + '. Read `AGENTS.md`');
+      out.push('   first, then `skills/create-site/SKILL.md` and its `build-rules.md`. Look up every');
+      out.push('   element, extension and option in the kit\'s `docs/` folder before using it.');
+      out.push('   **If you cannot read the kit, say so and stop. Do not build from general WordPress');
+      out.push('   knowledge:** the result would look like a site and follow none of the rules.');
+      out.push('2. Set **Settings → Permalinks** to "Post name", then load an inner page. On a');
+      out.push('   subfolder install WordPress does not always write `.htaccess`, and the symptom is');
+      out.push('   distinctive: the home page works and every other page 404s.');
+      out.push('3. Install the Unyson+ plugin from ' + PLUGIN_ZIP + '.');
+      out.push('   That zip is the core only; the features below come from the Extensions manager.');
+      out.push('4. Install the parent theme: from ' + THEME_REPO + '/releases/latest');
+      out.push('   download the source zip and rename the extracted folder to `unysonplus-theme`.');
+      out.push('   Copy the kit\'s `samples/sample-child-theme` as this site\'s child theme, rename it');
+      out.push('   for the business, and activate it.');
+      out.push('5. In **Unyson+ → Extensions**, download and then activate: ' + exts + '.');
+      out.push('   Some are under "Show other extensions". Forms must be active before any form is built.');
+    }
+    out.push('');
+    return out;
+  }
+
   function toPrompt(s, spec) {
     var a = ACTIONS[s.action] || ACTIONS.enquire;
     var st = styleBy(s.style);
@@ -201,6 +261,7 @@
 
     out.push('Build a WordPress website with Unyson+.');
     out.push('');
+    setupSteps(s, spec).forEach(function (l) { out.push(l); });
     out.push('## The business');
     out.push('- Name: ' + (s.name || '[tell the agent the business name]'));
     out.push('- What it does: ' + (s.describe || '[describe the business]'));
@@ -261,8 +322,15 @@
       out.push('Everything above is established. Anything else you need, ask before assuming.');
     }
     out.push('');
-    out.push('Follow the create-site skill in the Unyson+ AI Dev Kit. The site spec below is the same');
-    out.push('information in the form the skill reads.');
+    if (s.agent === 'claude-app') {
+      out.push('Work in the order the connector\'s own instructions give: colours, typography,');
+      out.push('container width, presets, header and footer, then the pages. The site spec below');
+      out.push('is the same information in the form the create-site skill reads, so hand it to a');
+      out.push('coding agent later and nothing is lost.');
+    } else {
+      out.push('Follow the create-site skill you cloned in step 1 (`skills/create-site/SKILL.md`).');
+      out.push('The site spec below is the same information in the form that skill reads.');
+    }
     out.push('');
     out.push('```json');
     out.push(JSON.stringify(spec, null, 2));
