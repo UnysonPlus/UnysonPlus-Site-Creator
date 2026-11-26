@@ -630,37 +630,46 @@ function footer() {
    which is the normal case for someone meeting this for the first time. */
 /* The style library, as the single source for the home page's picker AND its gallery cards.
    30 presets, each with a brief in the kit and a rendered page under /design-presets/. */
+/* The three registers from the routing protocol (docs: /ai-dev-kit/choosing-a-style). They are
+   ordered by what the visitor is risking, because the expensive mistake runs one way: an expressive
+   style on a high-stake business reads as inexperience. */
+const REGISTER_LABEL = {
+  conservative: 'Something at stake',
+  contemporary: 'A booking or a purchase',
+  expressive:   'Attention only',
+};
+
 const STYLES = [
-  { slug: 'monochrome', label: 'Monochrome editorial', blurb: 'Pure black on white, serif display type, square corners, three surfaces.' },
-  { slug: 'bauhaus', label: 'Bauhaus', blurb: 'Primary colour blocking, thick black borders, hard offset shadows.' },
-  { slug: 'modern-dark', label: 'Modern dark', blurb: 'Near-black canvas, layered ambient light, one indigo accent.' },
-  { slug: 'newsprint', label: 'Newsprint', blurb: 'A visible collapsed grid, four serif and sans faces, one editorial red.' },
-  { slug: 'saas', label: 'Minimalist Modern', blurb: 'Warm off-white, a dual-font pairing, one electric blue gradient.' },
-  { slug: 'luxury', label: 'Luxury / Editorial', blurb: 'Warm alabaster and charcoal, a visible grid, cinematic motion.' },
-  { slug: 'terminal', label: 'Terminal CLI', blurb: 'Monospace throughout, phosphor on near-black, panes and ASCII rules.' },
-  { slug: 'swiss', label: 'Swiss International', blurb: 'A visible grid, massive neutral type, one signal red.' },
-  { slug: 'kinetic', label: 'Kinetic Typography', blurb: 'Viewport-scale type, continuous marquees, hard inversions.' },
-  { slug: 'flat-design', label: 'Flat Design', blurb: 'No shadows at all, full-section colour blocking, bold geometric type.' },
-  { slug: 'art-deco', label: 'Art Deco', blurb: 'Obsidian and gold, stepped corners, glows instead of shadows.' },
-  { slug: 'material-design', label: 'Material You', blurb: 'Tonal surfaces, pill buttons, generous rounding.' },
-  { slug: 'neo-brutalism', label: 'Neo-brutalism', blurb: '4px black borders, hard offset shadows, black on every colour.' },
-  { slug: 'bold-typography', label: 'Bold Typography', blurb: 'Poster-scale headlines, one vermillion accent, no shadows.' },
-  { slug: 'academia', label: 'Academia', blurb: 'Mahogany and parchment, three serifs, brass hardware.' },
-  { slug: 'cyberpunk', label: 'Cyberpunk', blurb: 'A void ground, chamfered corners, neon glow and scanlines.' },
-  { slug: 'web3', label: 'Web3', blurb: 'A true void, a masked grid, orange and gold glow, pill buttons.' },
-  { slug: 'minimal-dark', label: 'Minimalist Dark', blurb: 'Layered slate, one warm amber, ambient glow.' },
-  { slug: 'playful-geometric', label: 'Playful Geometric', blurb: 'Sticker shadows, mixed radii, confetti colour.' },
-  { slug: 'claymorphism', label: 'Claymorphism', blurb: 'Digital clay, tinted shadows, super-rounded corners.' },
-  { slug: 'professional', label: 'Professional Editorial', blurb: 'Warm ivory, fine hairlines, one burnished gold.' },
-  { slug: 'botanical', label: 'Botanical', blurb: 'Rice paper, forest ink, sage surfaces, pills.' },
-  { slug: 'vaporwave', label: 'Vaporwave', blurb: 'A purple void, magenta and cyan tubes, a receding grid.' },
-  { slug: 'enterprise', label: 'Enterprise SaaS', blurb: 'Indigo gradient, blurred orbs, 12px cards.' },
-  { slug: 'sketch', label: 'Sketchbook', blurb: 'Pencil borders, wobbly corners, a marker red.' },
-  { slug: 'industrial', label: 'Industrial Control', blurb: 'A moulded chassis, two-shadow keys, one alert red.' },
-  { slug: 'neumorphism', label: 'Neumorphism', blurb: 'One surface colour, extruded by light alone.' },
-  { slug: 'organic', label: 'Organic', blurb: 'Moss and terracotta on rice paper, highly rounded.' },
-  { slug: 'maximalism', label: 'Maximalism', blurb: 'Five accents over a void, stacked hard shadows.' },
-  { slug: 'retro', label: 'Retro Desktop', blurb: 'A silver chassis, 2px bevels, navy title bars.' },
+  { slug: 'monochrome', label: 'Monochrome editorial', blurb: 'Pure black on white, serif display type, square corners, three surfaces.' , register: 'expressive'},
+  { slug: 'bauhaus', label: 'Bauhaus', blurb: 'Primary colour blocking, thick black borders, hard offset shadows.' , register: 'expressive'},
+  { slug: 'modern-dark', label: 'Modern dark', blurb: 'Near-black canvas, layered ambient light, one indigo accent.' , register: 'contemporary'},
+  { slug: 'newsprint', label: 'Newsprint', blurb: 'A visible collapsed grid, four serif and sans faces, one editorial red.' , register: 'expressive'},
+  { slug: 'saas', label: 'Minimalist Modern', blurb: 'Warm off-white, a dual-font pairing, one electric blue gradient.' , register: 'contemporary'},
+  { slug: 'luxury', label: 'Luxury / Editorial', blurb: 'Warm alabaster and charcoal, a visible grid, cinematic motion.' , register: 'contemporary', trap: 'Only when the prices really are high — expensive restraint on a budget service opens a gap between the page and the quote.'},
+  { slug: 'terminal', label: 'Terminal CLI', blurb: 'Monospace throughout, phosphor on near-black, panes and ASCII rules.' , register: 'expressive', trap: 'Only for developers, and only when the subject is a shell or CLI. Elsewhere it is a costume, and monospace at body length reads slower.'},
+  { slug: 'swiss', label: 'Swiss International', blurb: 'A visible grid, massive neutral type, one signal red.' , register: 'expressive', trap: 'Only when your content is genuinely regular and you have real white space. Squeezed, it reads as plain rather than composed.'},
+  { slug: 'kinetic', label: 'Kinetic Typography', blurb: 'Viewport-scale type, continuous marquees, hard inversions.' , register: 'expressive', trap: 'A poster style: it needs very few words. Give it a 600-word page and the layout stops working.'},
+  { slug: 'flat-design', label: 'Flat Design', blurb: 'No shadows at all, full-section colour blocking, bold geometric type.' , register: 'contemporary'},
+  { slug: 'art-deco', label: 'Art Deco', blurb: 'Obsidian and gold, stepped corners, glows instead of shadows.' , register: 'expressive'},
+  { slug: 'material-design', label: 'Material You', blurb: 'Tonal surfaces, pill buttons, generous rounding.' , register: 'contemporary'},
+  { slug: 'neo-brutalism', label: 'Neo-brutalism', blurb: '4px black borders, hard offset shadows, black on every colour.' , register: 'expressive', trap: 'Only when you are deliberately anti-corporate. On a professional service it reads as an unfinished site.'},
+  { slug: 'bold-typography', label: 'Bold Typography', blurb: 'Poster-scale headlines, one vermillion accent, no shadows.' , register: 'contemporary', trap: 'A poster style: it needs very few words.'},
+  { slug: 'academia', label: 'Academia', blurb: 'Mahogany and parchment, three serifs, brass hardware.' , register: 'contemporary'},
+  { slug: 'cyberpunk', label: 'Cyberpunk', blurb: 'A void ground, chamfered corners, neon glow and scanlines.' , register: 'expressive', trap: 'Entertainment, music and gaming only. Saturation that reads as atmosphere to a designer reads as noise to everyone else, and it does not survive a form.'},
+  { slug: 'web3', label: 'Web3', blurb: 'A true void, a masked grid, orange and gold glow, pill buttons.' , register: 'contemporary'},
+  { slug: 'minimal-dark', label: 'Minimalist Dark', blurb: 'Layered slate, one warm amber, ambient glow.' , register: 'contemporary'},
+  { slug: 'playful-geometric', label: 'Playful Geometric', blurb: 'Sticker shadows, mixed radii, confetti colour.' , register: 'contemporary'},
+  { slug: 'claymorphism', label: 'Claymorphism', blurb: 'Digital clay, tinted shadows, super-rounded corners.' , register: 'contemporary', trap: 'Children, education and crafts. Beside a price or a legal term it undercuts both.'},
+  { slug: 'professional', label: 'Professional Editorial', blurb: 'Warm ivory, fine hairlines, one burnished gold.' , register: 'conservative'},
+  { slug: 'botanical', label: 'Botanical', blurb: 'Rice paper, forest ink, sage surfaces, pills.' , register: 'contemporary'},
+  { slug: 'vaporwave', label: 'Vaporwave', blurb: 'A purple void, magenta and cyan tubes, a receding grid.' , register: 'expressive', trap: 'Entertainment and music only; it does not survive a form.'},
+  { slug: 'enterprise', label: 'Enterprise SaaS', blurb: 'Indigo gradient, blurred orbs, 12px cards.' , register: 'conservative'},
+  { slug: 'sketch', label: 'Sketchbook', blurb: 'Pencil borders, wobbly corners, a marker red.' , register: 'expressive', trap: 'Children, education and crafts. Beside a price or a legal term it undercuts both.'},
+  { slug: 'industrial', label: 'Industrial Control', blurb: 'A moulded chassis, two-shadow keys, one alert red.' , register: 'conservative'},
+  { slug: 'neumorphism', label: 'Neumorphism', blurb: 'One surface colour, extruded by light alone.' , register: 'contemporary', trap: 'Almost never on a public site: one surface colour with shape from light alone, so contrast is low by construction and it fights accessibility at every control.'},
+  { slug: 'organic', label: 'Organic', blurb: 'Moss and terracotta on rice paper, highly rounded.' , register: 'contemporary'},
+  { slug: 'maximalism', label: 'Maximalism', blurb: 'Five accents over a void, stacked hard shadows.' , register: 'expressive', trap: 'Entertainment, music and nightlife only; it does not survive a form.'},
+  { slug: 'retro', label: 'Retro Desktop', blurb: 'A silver chassis, 2px bevels, navy title bars.' , register: 'expressive', trap: 'Only when nostalgia is the product. Otherwise visitors read it as a broken stylesheet.'},
 ];
 
 /* The general website generator - the description-first route the hero promises.
@@ -711,9 +720,16 @@ function creatorForm() {
           <fieldset>
             <legend>3 &middot; The look</legend>
             <p class="sub">A style is a set of Theme Settings &mdash; palette, type, button shape, surfaces &mdash; applied site-wide. You can change all of it afterwards.</p>
+            <p class="sub">Pick by <strong>what your visitor is risking</strong>, not by your industry &mdash; the
+              registers below are that order. A broker and a dental practice are unrelated trades with the same
+              problem: a stranger being asked to trust them with something consequential.
+              <a href="https://docs.unysonplus.com/ai-dev-kit/choosing-a-style" target="_blank" rel="noopener">How to choose &rarr;</a></p>
             ${select('style', 'Style', [{ value: '', label: 'Pick a style' }]
-              .concat(STYLES.map((s) => ({ value: s.slug, label: s.label })))
+              .concat(['conservative', 'contemporary', 'expressive'].flatMap((reg) => STYLES
+                .filter((s) => s.register === reg)
+                .map((s) => ({ value: s.slug, label: REGISTER_LABEL[reg] + ' · ' + s.label }))))
               .concat([{ value: 'custom', label: 'Describe my own' }]))}
+            <p class="styletrap" id="cStyleTrap" hidden></p>
             <figure class="stylemini" id="cStyleMini" hidden>
               <a id="cStyleThumb" href="/design-presets/monochrome/" target="_blank" rel="noopener">
                 <img id="cStyleImg" src="" alt="" width="1600" height="1000" loading="lazy" decoding="async">

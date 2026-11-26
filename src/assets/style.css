@@ -606,3 +606,8 @@ input:focus, select:focus, textarea:focus { outline: none; border-color: var(--b
 @media (min-width: 760px) { .inc__grid { grid-template-columns: 1fr 1fr; } }
 .inc__item h3 { margin: 0 0 6px; font-size: 1.05rem; }
 .inc__item p { margin: 0; }
+
+/* A style's trap note — shown when the picked direction is one that applies perfectly and is
+   usually the wrong answer. A warning, never a block. */
+.styletrap{margin:.6rem 0 0;padding:.65rem .85rem;border-left:3px solid #e07b39;
+  background:rgba(224,123,57,.08);border-radius:0 6px 6px 0;font-size:.92rem;line-height:1.5}

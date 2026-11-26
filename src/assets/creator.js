@@ -24,6 +24,13 @@
   if (!form) return;
 
   var STYLES = window.UPWSTYLES || [];
+  /* The routing protocol's three registers, as a sentence each, so brand.style_reason says what the
+     choice was made ON. See docs.unysonplus.com/ai-dev-kit/choosing-a-style. */
+  var REGISTER_REASON = {
+    conservative: 'Conservative register: the visitor is risking something consequential, so the site has to read as careful.',
+    contemporary: 'Contemporary register: a booking or a purchase, so the site has to read as competent and current.',
+    expressive:   'Expressive register: only attention is at stake, so the site has to be worth looking at.',
+  };
   var KEY = 'upw-creator-v1';
 
   /* Where the agent gets its instructions and the software. The CRM engine has
@@ -157,6 +164,15 @@
            nobody made - the same fabrication missing[] exists to prevent, just quieter because
            it was always the same answer. Unpicked now says so, and the prompt asks. */
         style: s.style === 'custom' ? 'custom' : (s.style || 'unset'),
+        /* A style id on its own is unfalsifiable - a later reader cannot tell a considered choice
+           from a default. The register the person picked from is the start of the argument, so it
+           travels with the value and a wrong pick shows up as a wrong reason. */
+        style_reason: (function () {
+          if (s.style === 'custom') return 'Described by the owner; see style_notes.';
+          var picked = styleBy(s.style);
+          if (!picked) return null;
+          return REGISTER_REASON[picked.register] || null;
+        })(),
         style_notes: s.style === 'custom' ? (s.styleNotes || null) : (st ? st.blurb : null),
         primary: null,
         accent: null,
@@ -371,6 +387,7 @@
   var styleThumb = document.getElementById('cStyleThumb');
   var styleImg = document.getElementById('cStyleImg');
   var styleDesc = document.getElementById('cStyleDesc');
+  var styleTrap = document.getElementById('cStyleTrap');
   var notesField = document.getElementById('cNotesField');
   var lastPrompt = '';
 
@@ -401,6 +418,15 @@
     /* A glimpse of the look under the dropdown. The image is only pointed at a file once a
        style is chosen, so nothing is fetched for the 'Pick a style' default or for the
        describe-your-own path, where there is no preset to show. */
+    /* Several styles apply perfectly and are still usually the wrong answer. The warning is shown,
+       never enforced: the person can see their business and this form cannot, so a style they chose
+       after reading the cost is a decision. Silently substituting one would be a defect. */
+    if (styleTrap) {
+      var trap = (st && st.trap) ? st.trap : '';
+      styleTrap.hidden = !trap;
+      styleTrap.textContent = trap;
+    }
+
     var chosen = (st && s.style && s.style !== 'custom') ? st : null;
     var shown = chosen || (s.style === 'custom' ? null : sample);
     if (styleMini) {
